@@ -12,7 +12,7 @@
 #include <sys/socket.h>
 #include <fstream>
 #include "proxy_parse.h"
-
+#define BUFFER 100000
 #define MAXDATASIZE 2000000
 
 using namespace std;
@@ -105,7 +105,7 @@ int main(int argc , char *argv[])
          
         //Now join the thread , so that we dont terminate before the thread
         //pthread_join( thread_id , NULL);
-        puts("Handler assigned");
+       // puts("Handler assigned");
     }
      
     if (client_sock < 0)
@@ -175,11 +175,11 @@ int contactWebsite(char buff[], const char *PORT, const char * webhost, char out
 
     inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr),
             s, sizeof s);
-    printf("client: connecting to %s\n", s);
+  //  printf("client: connecting to %s\n", s);
 
     freeaddrinfo(servinfo); // all done with this structure
     int length = strlen(buff);
-    cout << "man man " << buff << endl;
+    //cout << "man man " << buff << endl;
     if ((send(sockfd, buff, length, 0)) < 0) {
             perror("SEND error");
             shutdown(sockfd, SHUT_RDWR);
@@ -255,12 +255,11 @@ static void writeToSocket (const char *buf, int sockfd, int otherfd, int *len) {
 }
 
  static void writeToClient (int iClientfd, int iServerfd) {
-    enum {BUF_SIZE = 4096};
 
     int iRecv;
-    char buf[BUF_SIZE];
+    char buf[BUFFER];
 
-    while ((iRecv = recv(iServerfd, buf, BUF_SIZE, 0)) > 0)
+    while ((iRecv = recv(iServerfd, buf, BUFFER, 0)) > 0)
           writeToSocket(buf, iClientfd, iServerfd, &iRecv);
 
     /* Error handling */
@@ -358,7 +357,7 @@ void *connection_handler(void *socket_desc)
         /* Act as proxy between client and server */
         char * serverReq = getServerReq(req, iClientfd, reqLen);
 
-        char serv[] = "172.31.1.4";
+        char serv[] = "172.31.1.3";
         char port[] = "8080";
         int iServerfd = createClientSocket( serv, port);
         writeToSocket(serverReq, iServerfd, iClientfd, reqLen);
@@ -400,3 +399,4 @@ void *connection_handler(void *socket_desc)
          
     return 0;
 } 
+ 
