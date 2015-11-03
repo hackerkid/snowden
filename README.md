@@ -1,5 +1,5 @@
-# snowden (HTTP Proxy Serever) Docs
-Yet another prooxy server in C++
+# snowden
+Yet another proxy server in C++
 
 ##Installing
 
